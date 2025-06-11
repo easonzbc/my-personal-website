@@ -92,8 +92,8 @@
 
             let redirectUrl = googleFormBaseUrl;
             if (userId) {
-                // 將 userId 參數加入 Google 表單連結，已更新 entry ID
-                redirectUrl += `&entry.11729141524=${userId}`; // <<< 已修改：更新為正確的 entry ID
+                // 將 userId 參數加入 Google 表單連結，並進行 URL 編碼以確保兼容性
+                redirectUrl += `&entry.11729141524=${encodeURIComponent(userId)}`; // <<< 已修改：重新加入 encodeURIComponent
             }
 
             // 將手動跳轉連結設定為正確的 URL
