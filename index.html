@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>跳轉中...</title>
+    <title>確認連結</title>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            /* 使用 Inter 字體 */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -26,7 +25,8 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+            max-width: 500px;
+            /* 增加最大寬度 */
             width: 100%;
         }
         
@@ -42,65 +42,78 @@
             margin-bottom: 20px;
         }
         
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #4CAF50;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
+        #generatedLink {
+            word-break: break-all;
+            /* 防止長連結溢出 */
+            background-color: #e9ebee;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            /* 等寬字體方便查看 */
+            font-size: 0.9rem;
             margin-bottom: 20px;
+            text-align: left;
         }
         
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+        button {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* 按鈕陰影 */
         }
         
-        a {
-            color: #2196F3;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        a:hover {
-            text-decoration: underline;
+        button:hover {
+            background-color: #1976D2;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>頁面載入中...</h1>
-        <div class="spinner"></div>
-        <p>正在自動跳轉到 Google 表單。</p>
-        <p>如果沒有自動跳轉，請 <a id="manualLink" href="#">點擊這裡</a></p>
+        <h1>請確認生成的連結</h1>
+        <p>這是自動生成的 Google 表單連結：</p>
+        <div id="generatedLink"></div>
+        <button id="copyAndOpenButton">複製並開啟表單</button>
+        <p>（如果您無法複製或開啟，請手動複製上方連結到新的瀏覽器分頁）</p>
     </div>
 
     <script>
         window.onload = function() {
-            // 從 URL 取得參數
             const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get('userId'); // 從網址獲取 userId
+            const userId = urlParams.get('userId');
 
-            // 您的 Google 表單基礎連結
             const googleFormBaseUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfYSR9XyZ9ErbeHm9wnfa_yChN39AIQbEKfp3HXQalvuBRtGQ/viewform?usp=pp_url';
 
             let redirectUrl = googleFormBaseUrl;
             if (userId) {
-                // 將 userId 參數加入 Google 表單連結，並進行 URL 編碼以確保兼容性
-                redirectUrl += `&entry.11729141524=${encodeURIComponent(userId)}`; // <<< 已修改：重新加入 encodeURIComponent
+                redirectUrl += `&entry.11729141524=${encodeURIComponent(userId)}`;
             }
 
-            // 將手動跳轉連結設定為正確的 URL
-            document.getElementById('manualLink').href = redirectUrl;
+            // 將生成的 URL 顯示在頁面上
+            document.getElementById('generatedLink').textContent = redirectUrl;
 
-            // 自動跳轉到 Google 表單
-            window.location.replace(redirectUrl);
+            // 設置按鈕的點擊事件
+            document.getElementById('copyAndOpenButton').onclick = function() {
+                // 嘗試複製到剪貼簿 (注意: 瀏覽器安全性可能限制自動複製)
+                navigator.clipboard.writeText(redirectUrl).then(function() {
+                    console.log('連結已複製到剪貼簿');
+                }).catch(function() {
+                    console.error('無法自動複製連結到剪貼簿。請手動複製。');
+                });
+
+                // 在新視窗中開啟連結 (不會替換當前頁面)
+                window.open(redirectUrl, '_blank');
+            };
+
+            // 注意：這個版本不會自動跳轉，需要手動點擊按鈕或複製連結測試
+            // console.log('最終生成的 Google 表單 URL:', redirectUrl); // 依然保留 console.log
+            // window.location.replace(redirectUrl); // 已註解掉自動跳轉
         };
     </script>
 </body>
